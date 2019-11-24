@@ -24,11 +24,13 @@ files_to_search <- list.files(directory_to_search, recursive = TRUE, full.names 
   tibble(filenames = .) %>% 
   filter(grepl(extension_types_re, filenames, ignore.case = TRUE)) 
 
+files_to_search %>% head()
+
 # Read files and search
 files_identified <- files_to_search %>% 
   mutate(file_text = map(filenames, read_file)) %>% 
   filter(grepl(search_terms_re, file_text, ignore.case = TRUE)) %>% 
   unnest(file_text)
 
-files_identified$filenames
-files_identified$file_text[1]
+files_identified$filenames %>% head()
+
