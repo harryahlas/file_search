@@ -3,7 +3,7 @@
 library(tidyverse)
 
 # Identify directory to search
-directory_to_search <- "C:\\Development\\github\\blog"#server-python"
+directory_to_search <- "C:/Development/github/blog"#"C:\\Development\\github\\blog"#server-python"
 
 # Identify filetypes to search
 extension_types <- c(".html", ".R")
@@ -14,19 +14,12 @@ search_terms <- c("hrsample", "HRSAMPLE")
 search_terms_re <- paste0(search_terms, collapse = "|") # format for regex filter
 
 # Identify files to search
-files_to_search <- list.files(directory_to_search, recursive = TRUE) %>% 
+files_to_search <- list.files(directory_to_search, recursive = TRUE, full.names = TRUE,) %>% 
   tibble(filenames = .) %>% 
   filter(grepl(extension_types_re, filenames, ignore.case = TRUE)) 
 
+# Read files and search
+files <- files_to_search %>% 
+  mutate(file_text = map(filenames, read_file)) %>% 
+  filter(grepl(search_terms_re, file_text, ignore.case = TRUE))
 
-
-
-files_to_search <- tibble(
-  filenames = list.files(directory_to_search, recursive = TRUE))  filter for extensions
-  
-
-search_terms <- c(".wav", ".mp3")
-file_list[grepl("^m.*\\.log", file_list)]
-#file_list[grepl("*\\.wav$", file_list)]%>% length()
-
-file_list[grepl(".mp3$|.wav$", file_list)] 
