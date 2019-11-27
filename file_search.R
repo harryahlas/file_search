@@ -26,9 +26,16 @@ files_to_search <- list.files(directory_to_search, recursive = TRUE, full.names 
 
 files_to_search %>% head()
 
+# tryCatch wrapper
+read_file_try <- function(file_name) {
+  errortest <- try(read_file(file_name), T)
+  output <- if_else(class(errortest) == "try-error", "error", as.character(errortest))
+}
+
 # Read files and search
 files_identified <- files_to_search %>% 
-  mutate(file_text = map(filenames, read_file)) %>% 
+  add_row(filenames = "x") %>% 
+  mutate(file_text = map(filenames, read_file_try)) %>% 
   filter(grepl(search_terms_re, file_text, ignore.case = TRUE)) %>% 
   unnest(file_text)
 
